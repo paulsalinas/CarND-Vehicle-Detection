@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
 from utils import *
 import pickle
+from scipy.ndimage.measurements import label
 
 dist_pickle = pickle.load( open("svc_pickle.p", "rb" ) )
 svc = dist_pickle["svc"]
@@ -26,7 +27,7 @@ ystart = 400
 ystop = 656
 scale = 1.5
 
-out_img = find_cars(draw_image, 
+out_img, box_list = find_cars(draw_image, 
                     ystart, 
                     ystop, 
                     scale, 
@@ -42,3 +43,28 @@ plt.imshow(out_img);
 plt.savefig("find_cars.png");
 
 
+# Heat Map
+heat = np.zeros_like(image[:,:,0]).astype(np.float)
+
+# Add heat to each box in box list
+heat = add_heat(heat, box_list)
+    
+# Apply threshold to help remove false positives
+heat = apply_threshold(heat,1)
+
+# Visualize the heatmap when displaying    
+heatmap = np.clip(heat, 0, 255)
+
+# Find final boxes from heatmap using label function
+labels = label(heatmap)
+draw_img = draw_labeled_bboxes(np.copy(image), labels)
+
+fig = plt.figure()
+plt.subplot(121)
+plt.imshow(draw_img)
+plt.title('Car Positions')
+plt.subplot(122)
+plt.imshow(heatmap, cmap='hot')
+plt.title('Heat Map')
+fig.tight_layout()
+plt.savefig("heat_map.png");
