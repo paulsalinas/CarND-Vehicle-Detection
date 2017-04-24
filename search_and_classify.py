@@ -7,6 +7,7 @@ import time
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
+import pickle
 from utils import *
 
 # NOTE: the next import is only valid for scikit-learn version <= 0.17
@@ -78,6 +79,8 @@ print('Feature vector length:', len(X_train[0]))
 # Use a linear SVC 
 svc = LinearSVC()
 
+# rvecs / tvecs)
+
 # Check the training time for the SVC
 t=time.time()
 svc.fit(X_train, y_train)
@@ -88,9 +91,21 @@ print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
 # Check the prediction time for a single sample
 t=time.time()
 
-image = mpimg.imread('./test_images/test1.jpg')
-draw_image = np.copy(image)
+pickle_path = "./svc_pickle.p"
+dist_pickle = {}
+dist_pickle["color_space"] = color_space
+dist_pickle["orient"] = orient
+dist_pickle["svc"] = svc
+dist_pickle["X_scaler"] = X_scaler
+dist_pickle["pix_per_cell"] = pix_per_cell
+dist_pickle["cell_per_block"] = cell_per_block
+dist_pickle["spatial_size"] = spatial_size
+dist_pickle["hist_bins"] = hist_bins
 
+pickle.dump(dist_pickle, open(pickle_path, "wb"))
+
+image = mpimg.imread('./test_images/test6.jpg')
+draw_image = np.copy(image)
 
 ystart = 400
 ystop = 656
@@ -109,6 +124,6 @@ out_img = find_cars(draw_image,
                     hist_bins)
 
 plt.imshow(out_img);
-plt.savefig("bounding_box.png");
+plt.savefig("find_cars.png");
 
 
