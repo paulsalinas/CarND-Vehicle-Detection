@@ -250,6 +250,7 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
 def find_cars(img, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins):
     
     draw_img = np.copy(img)
+
     img = img.astype(np.float32)/255
     
     img_tosearch = img[ystart:ystop,:,:]
