@@ -31,11 +31,15 @@ X_scaler = StandardScaler().fit(X)
 ## Sliding Window Search
 The sliding window search can be found in [utils.py](utils.py) in the `find_cars` function.
 
-**How did you find the scales to search and how much to overlap?**
+I found only incremental improvement when implementing multiple sliding window sizes. For the sake of time, I stuck with only one scale. I'll discuss this result more in the end of this report.
+
+Through trial and error, I found the step size 2 in the sliding window search was sufficient in capturing the features.
 
 Here is an image demonstrating the search:
 ![sliding windows](./visualizations/test_1_find_cars.png "sliding window search")
 
+### Classifier
+The classifier in the sliding window search included the HOG features of all 3 channels in YCrCb. Further, the spatial and color features were added to improve the performance of the classifier.
 
 ## Video Implementation
 The resulting video is [vehicle_detection.mp4](vehicle_detection.mp4).
@@ -53,3 +57,8 @@ the result of using the heat map to filter false positives:
 
 
 ## Discussion
+Currently my solution is a bit janky when drawing the bounding boxes. To address the smoothness of the vehicle detection, I would experiment with a more stateful pipeline that maintains the previous state of vehicle detection. Presumably, once cars are found, the previous position of the car can help aid in detecting the vehicle in the next frame. This includes moving and resizing the bounding box only incrementally which would mediate the janky behavior that I'm seeing right now in my video.
+
+Secondly, I'm still noticing some false positives around some shadows. One approach is to augment the non-vehicle data and add shadows, and to use that additional data in the classifier.
+
+Thirdly, I would experiment more with different sliding windows sizes and restricting the search area based on these sizes. I think when done carefully, this might help make the search algorithm more efficient by searching less windows if I understand it correctly.
