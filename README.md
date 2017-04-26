@@ -47,12 +47,15 @@ The resulting video is [vehicle_detection.mp4](vehicle_detection.mp4).
 To eliminate false positives, I limited the search to a certain boundary of the image where the cars are more likely to show up (not in the air or around the hood). I also implemented a 'heat map' to eliminate false positives. The heat map eliminated possibilities that didn't have many bounding boxes.
 
 Here's a visualization of how the heat map helped filter a false positive in this case:
+
 ![sliding windows search with false positive](./visualizations/test_5_find_cars.png "false positive")
 
 the resulting heat map:
+
 ![heat map](./visualizations/test_5_heat_map.png "heat map")
 
 the result of using the heat map to filter false positives:
+
 ![result from heat map](./visualizations/test_5_car_positions.png "without false positives")
 
 
